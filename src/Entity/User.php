@@ -8,118 +8,149 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
+/**
+ * Defines the properties of the User entity to represent the users.
+ */
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
-{
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+class User implements UserInterface, PasswordAuthenticatedUserInterface {
+  #[ORM\Id]
+  #[ORM\GeneratedValue]
+  #[ORM\Column]
+  private ?int $id = NULL;
 
-    #[ORM\Column(length: 180)]
-    private ?string $email = null;
+  #[ORM\Column(length: 180)]
+  private ?string $email = NULL;
 
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column]
-    private array $roles = [];
+  /**
+   * The user roles.
+   *
+   * @var list<string>
+   */
+  #[ORM\Column]
+  private array $roles = [];
 
-    /**
-     * @var string The hashed password
-     */
-    #[ORM\Column]
-    private ?string $password = null;
+  /**
+   * The hashed password.
+   *
+   * @var string|null
+   */
+  #[ORM\Column]
+  private ?string $password = NULL;
 
-    #[ORM\Column(type: 'boolean')]
-    private $isVerified = false;
+  #[ORM\Column(type: 'boolean')]
+  private $isVerified = FALSE;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+  /**
+   * Get the user ID.
+   *
+   * @return int|null
+   *   The user ID.
+   */
+  public function getId(): ?int {
+    return $this->id;
+  }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
+  /**
+   * Get the user email.
+   *
+   * @return string|null
+   *   The user email.
+   */
+  public function getEmail(): ?string {
+    return $this->email;
+  }
 
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
+  /**
+   * Set the user email.
+   *
+   * @param string $email
+   *   The user email.
+   */
+  public function setEmail(string $email): static {
+    $this->email = $email;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
-     */
-    public function getUserIdentifier(): string
-    {
-        return (string) $this->email;
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function getUserIdentifier(): string {
+    return (string) $this->email;
+  }
 
-    /**
-     * @see UserInterface
-     *
-     * @return list<string>
-     */
-    public function getRoles(): array
-    {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+  /**
+   * {@inheritdoc}
+   */
+  public function getRoles(): array {
+    $roles = $this->roles;
+    // Guarantee every user at least has ROLE_USER.
+    $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
-    }
+    return array_unique($roles);
+  }
 
-    /**
-     * @param list<string> $roles
-     */
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
+  /**
+   * Set the user roles.
+   *
+   * @param array $roles
+   *   The user roles.
+   */
+  public function setRoles(array $roles): static {
+    $this->roles = $roles;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function getPassword(): string {
+    return $this->password;
+  }
 
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
+  /**
+   * Set the user password.
+   *
+   * @param string $password
+   *   The user password.
+   */
+  public function setPassword(string $password): static {
+    $this->password = $password;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials(): void
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function eraseCredentials(): void {
+    // If you store any temporary, sensitive data on the user, clear it here
+    // $this->plainPassword = null;.
+  }
 
-    public function isVerified(): bool
-    {
-        return $this->isVerified;
-    }
+  /**
+   * Whether the user is verified.
+   *
+   * @return bool
+   *   TRUE if the user is verified, FALSE otherwise.
+   */
+  public function isVerified(): bool {
+    return $this->isVerified;
+  }
 
-    public function setVerified(bool $isVerified): static
-    {
-        $this->isVerified = $isVerified;
+  /**
+   * Set whether the user is verified.
+   *
+   * @param bool $isVerified
+   *   TRUE if the user is verified, FALSE otherwise.
+   */
+  public function setVerified(bool $isVerified): static {
+    $this->isVerified = $isVerified;
 
-        return $this;
-    }
+    return $this;
+  }
+
 }

@@ -12,44 +12,59 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegistrationFormType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder
-            ->add('email')
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
-            ])
-            ->add('plainPassword', PasswordType::class, [
-                // instead of being set onto the object directly,
-                // this is read and encoded in the controller
-                'mapped' => false,
-                'attr' => ['autocomplete' => 'new-password'],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter a password',
-                    ]),
-                    new Length([
-                        'min' => 6,
-                        'minMessage' => 'Your password should be at least {{ limit }} characters',
-                        // max length allowed by Symfony for security reasons
-                        'max' => 4096,
-                    ]),
-                ],
-            ])
-        ;
-    }
+/**
+ * Form type for user registration.
+ */
+class RegistrationFormType extends AbstractType {
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => User::class,
-        ]);
-    }
+  /**
+   * Build the form.
+   *
+   * @param \Symfony\Component\Form\FormBuilderInterface $builder
+   *   The form builder.
+   * @param array $options
+   *   The form options.
+   */
+  public function buildForm(FormBuilderInterface $builder, array $options): void {
+    $builder
+      ->add('email')
+      ->add('agreeTerms', CheckboxType::class, [
+        'mapped' => FALSE,
+        'constraints' => [
+          new IsTrue([
+            'message' => 'You should agree to our terms.',
+          ]),
+        ],
+      ])
+      ->add('plainPassword', PasswordType::class, [
+              // Instead of being set onto the object directly,
+              // this is read and encoded in the controller.
+        'mapped' => FALSE,
+        'attr' => ['autocomplete' => 'new-password'],
+        'constraints' => [
+          new NotBlank([
+            'message' => 'Please enter a password',
+          ]),
+          new Length([
+            'min' => 6,
+            'minMessage' => 'Your password should be at least {{ limit }} characters',
+                      // Max length allowed by Symfony for security reasons.
+            'max' => 4096,
+          ]),
+        ],
+      ]);
+  }
+
+  /**
+   * Configure the form options.
+   *
+   * @param \Symfony\Component\OptionsResolver\OptionsResolver $resolver
+   *   The option resolver.
+   */
+  public function configureOptions(OptionsResolver $resolver): void {
+    $resolver->setDefaults([
+      'data_class' => User::class,
+    ]);
+  }
+
 }

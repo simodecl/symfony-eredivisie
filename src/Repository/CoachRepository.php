@@ -7,6 +7,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * The Coach Repository.
+ *
  * @extends ServiceEntityRepository<Coach>
  *
  * @method Coach|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,35 +16,16 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Coach[]    findAll()
  * @method Coach[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CoachRepository extends ServiceEntityRepository
-{
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Coach::class);
-    }
+class CoachRepository extends ServiceEntityRepository {
 
-    //    /**
-    //     * @return Coach[] Returns an array of Coach objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+  /**
+   * CoachRepository constructor.
+   *
+   * @param \Doctrine\Persistence\ManagerRegistry $registry
+   *   The registry.
+   */
+  public function __construct(ManagerRegistry $registry) {
+    parent::__construct($registry, Coach::class);
+  }
 
-    //    public function findOneBySomeField($value): ?Coach
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
