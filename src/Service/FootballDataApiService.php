@@ -34,9 +34,9 @@ class FootballDataApiService {
     }
 
     $this->client = $client->withOptions([
-      'base_uri' => $_ENV['FOOTBALL_DATA_AUTH_TOKEN'],
+      'base_uri' => $_ENV['FOOTBALL_DATA_API_BASE_URI'],
       'headers' => [
-        'X-Auth-Token' => $_ENV['FOOTBALL_DATA_AUTH_TOKEN'],
+        'X-Auth-Token' => $_ENV['FOOTBALL_DATA_API_TOKEN'],
       ],
     ]);
   }
@@ -54,10 +54,8 @@ class FootballDataApiService {
    * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
    */
   public function getEredivisieTeams(): array {
-    $response = $this->client->request('GET', '/competitions/DED/teams');
-    $parsedResponse = $response->toArray();
-
-    return $parsedResponse['value'];
+    $response = $this->client->request('GET', '/v4/competitions/DED/teams');
+    return $response->toArray();
   }
 
 }
