@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'homepage' %}
+
+{% block body %}
+    <div class="page-header">
+        <h1>Welcome to the Eredivisie dashboard!</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="jumbotron">
+                <a class="btn btn-primary btn-lg" href="{{ path('homepage') }}">
+                   Teams
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
