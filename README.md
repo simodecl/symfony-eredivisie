@@ -5,11 +5,6 @@ This is a programming assignment created to demonstrate skills and resourcefulne
 - Install [DDEV](https://ddev.readthedocs.io/en/stable/)
 - Go to https://www.football-data.org/, create an account and get an API key
 ## Usage
-This is a template for the application development for the internship assignment. This environment is set up with [DDEV]([https://ddev.readthedocs.io/en/stable/](https://ddev.com/get-started/)). Install this software to make use of this development environment.
-
-Create a new personal repository based on this template
-
-![Screenshot 2024-04-09 at 10 34 28](https://github.com/recranet/internship-assignment-template/assets/36085765/90d8b4a0-8d2e-43c2-8677-3158270ee716)
 
 Once you have cloned this repository on your computer, you can use the following commands:
 
