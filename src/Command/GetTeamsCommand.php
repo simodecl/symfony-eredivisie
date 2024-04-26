@@ -10,6 +10,7 @@ use App\Repository\PlayerRepository;
 use App\Repository\TeamRepository;
 use App\Service\FootballDataApiService;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,7 +34,8 @@ class GetTeamsCommand extends Command {
     private readonly TeamRepository $teams,
     private readonly CoachRepository $coaches,
     private readonly PlayerRepository $players,
-    private readonly FootballDataApiService $footballDataApiService
+    private readonly FootballDataApiService $footballDataApiService,
+    private readonly LoggerInterface $logger
   ) {
     parent::__construct();
   }
@@ -56,12 +58,14 @@ class GetTeamsCommand extends Command {
     catch (\Exception $e) {
       $io->error('An error occurred while trying to fetch the Eredivisie teams from the Football Data API.');
       $io->error($e->getMessage());
+      $this->logger->error('An error occurred while trying to fetch the Eredivisie teams from the Football Data API: {error}', ['error' => $e->getMessage()]);
 
       return Command::FAILURE;
     }
 
     if (empty($data) || !isset($data['teams'])) {
       $io->error('No data was returned by the Football Data API.');
+      $this->logger->error('No data was returned by the Football Data API.');
 
       return Command::FAILURE;
     }
@@ -137,6 +141,7 @@ class GetTeamsCommand extends Command {
     $this->entityManager->flush();
 
     $io->success(sprintf('Succesfully created/updated %s teams, %s coaches and %s players.', count($teamIds), count($coachIds), count($playerIds)));
+    $this->logger->info('Succesfully created/updated {teams} teams, {coaches} coaches and {players} players.', ['teams' => count($teamIds), 'coaches' => count($coachIds), 'players' => count($playerIds)]);
 
     // Clean up orphaned entities.
     $teamsToDelete = $this->teams->findAllExcept($teamIds);
@@ -158,6 +163,7 @@ class GetTeamsCommand extends Command {
     $this->entityManager->flush();
 
     $io->success(sprintf('Succesfully removed %s teams, %s coaches and %s players.', count($teamsToDelete), count($coachesToDelete), count($playersToDelete)));
+    $this->logger->info('Succesfully removed {teams} teams, {coaches} coaches and {players} players.', ['teams' => count($teamsToDelete), 'coaches' => count($coachesToDelete), 'players' => count($playersToDelete)]);
 
     return Command::SUCCESS;
   }
