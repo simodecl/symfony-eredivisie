@@ -34,7 +34,7 @@ class CoachRepository extends ServiceEntityRepository {
    * @param int[] $ids
    *   The IDs of the coaches to exclude.
    *
-   * @return Coach[]
+   * @return \App\Entity\Coach[]
    *   The coaches.
    */
   public function findAllExcept(array $ids): array {

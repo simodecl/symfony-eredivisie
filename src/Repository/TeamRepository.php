@@ -34,7 +34,7 @@ class TeamRepository extends ServiceEntityRepository {
    * @param int[] $ids
    *   The IDs of the teams to exclude.
    *
-   * @return Team[]
+   * @return \App\Entity\Team[]
    *   The teams.
    */
   public function findAllExcept(array $ids): array {

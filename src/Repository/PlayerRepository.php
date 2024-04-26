@@ -34,7 +34,7 @@ class PlayerRepository extends ServiceEntityRepository {
    * @param int[] $ids
    *   The IDs of the players to exclude.
    *
-   * @return Player[]
+   * @return \App\Entity\Player[]
    *   The players.
    */
   public function findAllExcept(array $ids): array {
