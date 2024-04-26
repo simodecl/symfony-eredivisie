@@ -28,4 +28,20 @@ class PlayerRepository extends ServiceEntityRepository {
     parent::__construct($registry, Player::class);
   }
 
+  /**
+   * Find all players except the ones with the given IDs.
+   *
+   * @param int[] $ids
+   *   The IDs of the players to exclude.
+   *
+   * @return Player[]
+   *   The players.
+   */
+  public function findAllExcept(array $ids): array {
+    $qb = $this->createQueryBuilder('p');
+    $qb->where($qb->expr()->notIn('p.externalId', $ids));
+
+    return $qb->getQuery()->getResult();
+  }
+
 }

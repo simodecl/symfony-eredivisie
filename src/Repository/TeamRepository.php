@@ -28,4 +28,20 @@ class TeamRepository extends ServiceEntityRepository {
     parent::__construct($registry, Team::class);
   }
 
+  /**
+   * Find all teams except the ones with the given IDs.
+   *
+   * @param int[] $ids
+   *   The IDs of the teams to exclude.
+   *
+   * @return Team[]
+   *   The teams.
+   */
+  public function findAllExcept(array $ids): array {
+    $qb = $this->createQueryBuilder('t');
+    $qb->where($qb->expr()->notIn('t.externalId', $ids));
+
+    return $qb->getQuery()->getResult();
+  }
+
 }

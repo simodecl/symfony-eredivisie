@@ -89,6 +89,8 @@ class GetTeamsCommand extends Command {
       $team->setFounded($teamData['founded'] ?? '');
       $team->setVenue($teamData['venue'] ?? '');
       $this->entityManager->persist($team);
+      // Save team in database to be able to reference it in the coach and
+      // player entities.
       $this->entityManager->flush();
 
       // Create or update the coach.
@@ -135,6 +137,27 @@ class GetTeamsCommand extends Command {
     $this->entityManager->flush();
 
     $io->success(sprintf('Succesfully created/updated %s teams, %s coaches and %s players.', count($teamIds), count($coachIds), count($playerIds)));
+
+    // Clean up orphaned entities.
+    $teamsToDelete = $this->teams->findAllExcept($teamIds);
+    $coachesToDelete = $this->coaches->findAllExcept($coachIds);
+    $playersToDelete = $this->players->findAllExcept($playerIds);
+
+    foreach ($teamsToDelete as $team) {
+      $this->entityManager->remove($team);
+    }
+
+    foreach ($coachesToDelete as $coach) {
+      $this->entityManager->remove($coach);
+    }
+
+    foreach ($playersToDelete as $player) {
+      $this->entityManager->remove($player);
+    }
+
+    $this->entityManager->flush();
+
+    $io->success(sprintf('Succesfully removed %s teams, %s coaches and %s players.', count($teamsToDelete), count($coachesToDelete), count($playersToDelete)));
 
     return Command::SUCCESS;
   }

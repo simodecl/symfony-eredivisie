@@ -28,4 +28,20 @@ class CoachRepository extends ServiceEntityRepository {
     parent::__construct($registry, Coach::class);
   }
 
+  /**
+   * Find all coaches except the ones with the given IDs.
+   *
+   * @param int[] $ids
+   *   The IDs of the coaches to exclude.
+   *
+   * @return Coach[]
+   *   The coaches.
+   */
+  public function findAllExcept(array $ids): array {
+    $qb = $this->createQueryBuilder('c');
+    $qb->where($qb->expr()->notIn('c.externalId', $ids));
+
+    return $qb->getQuery()->getResult();
+  }
+
 }
