@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ team.name }} | Eredivise Dashboard{% endblock %}
+
+{% block body %}
+    <div class="page-header">
+        <h1>{{ team.name }}</h1>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 teams">
+        <div class="col">
+            <div class="card team-card">
+                <div class="card-header">
+                    <img src="{{ team.crest }}" class="card-img-top" alt="{{ team.name }} logo">
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <strong>Colors:</strong> {{ team.colors }}<br>
+                        <strong>Founded:</strong> {{ team.founded }}<br>
+                        <strong>Website:</strong> <a href="{{ team.website }}" target="_blank">{{ team.website }}</a><br>
+                        <strong>Venue:</strong> {{ team.venue }}<br>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mt-4">Coach</h2>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">{{ coach.name }}</h3>
+                    <p class="card-text">
+                        <strong>Date of Birth:</strong> {{ coach.dateOfBirth|date('d-m-Y') }}<br>
+                        <strong>Nationality:</strong> {{ coach.nationality }}<br>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="mt-4">Players</h2>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        {% for player in players %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">{{ player.name }}</h3>
+                        <p class="card-text">
+                            <strong>Position:</strong> {{ player.position }}<br>
+                            <strong>Date of Birth:</strong> {{ player.dateOfBirth|date('d-m-Y') }}<br>
+                            <strong>Nationality:</strong> {{ player.nationality }}<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

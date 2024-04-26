@@ -2,9 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Team;
+use App\Repository\PlayerRepository;
+use App\Repository\TeamRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
+
 
 /**
  * Controller used to display teams.
@@ -14,13 +19,35 @@ class TeamController extends AbstractController {
   /**
    * Display the list of teams.
    *
+   * @param \App\Repository\TeamRepository $teamRepo
+   *   The team repository.
+   *
    * @return \Symfony\Component\HttpFoundation\Response
    *   A Symfony response object.
    */
   #[Route('/teams', name: 'app_teams')]
-  public function index(): Response {
+  public function index(TeamRepository $teamRepo): Response {
+    $teams = $teamRepo->findBy([], ['name' => 'ASC']);
+
     return $this->render('team/index.html.twig', [
-      'controller_name' => 'TeamController',
+      'teams' => $teams,
+    ]);
+  }
+
+  /**
+   * Display the details of a team.
+   *
+   * @param \App\Entity\Team $team
+   *   The team.
+   * @param \App\Repository\PlayerRepository $playerRepo
+   *   The player repository.
+   */
+  #[Route('/teams/{id}', name: 'team', requirements: ['id' => Requirement::POSITIVE_INT], methods: ['GET'])]
+  public function teamDetail(Team $team, PlayerRepository $playerRepo): Response {
+    return $this->render('team/detail.html.twig', [
+      'team' => $team,
+      'coach' => $team->getCoach(),
+      'players' => $playerRepo->findBy(['team' => $team->getId()]),
     ]);
   }
 

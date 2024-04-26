@@ -29,15 +29,13 @@
                     <div class="navbar-collapse collapse" id="appNavbar">
                         <ul class="navbar-nav ml-auto">
                             {% block header_navigation_links %}
-                                <li class="nav-item{{ _route == 'blog_index' ? ' active' : '' }}">
-                                    <a class="nav-link" href="{{ path('homepage') }}">
-                                        <i class="fa fa-home" aria-hidden="true"></i> {{ 'menu.homepage'|trans }}
-                                    </a>
+                                <li class="nav-item{{ _route == 'app_teams' ? ' active' : '' }}">
+                                    <a class="nav-link" href="{{ path('app_teams') }}">Teams</a>
                                 </li>
                             {% endblock %}
 
-                            <li class="nav-item{{ _route == 'blog_search' ? ' active' : '' }}">
-                                <a class="nav-link" href="{{ path('homepage') }}"> <i class="fa fa-search"></i> {{ 'menu.search'|trans }}</a>
+                            <li class="nav-item{{ _route == 'standings' ? ' active' : '' }}">
+                                <a class="nav-link" href="{{ path('homepage') }}">Standings</a>
                             </li>
 
                             {% if app.user %}
