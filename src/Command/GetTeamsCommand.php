@@ -2,6 +2,9 @@
 
 namespace App\Command;
 
+use App\Entity\Coach;
+use App\Entity\Player;
+use App\Entity\Team;
 use App\Repository\CoachRepository;
 use App\Repository\PlayerRepository;
 use App\Repository\TeamRepository;
@@ -57,13 +60,81 @@ class GetTeamsCommand extends Command {
       return Command::FAILURE;
     }
 
-    if (empty($data)) {
+    if (empty($data) || !isset($data['teams'])) {
       $io->error('No data was returned by the Football Data API.');
 
       return Command::FAILURE;
     }
 
-    $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+    // Store team, coach and player Ids to clean up orphaned entities later.
+    $teamIds = [];
+    $coachIds = [];
+    $playerIds = [];
+
+    foreach ($data['teams'] as $teamData) {
+      // Create or update the team.
+      $team = $this->teams->findOneBy(['externalId' => $teamData['id']]);
+      $teamIds[] = $teamData['id'];
+
+      if (!$team) {
+        $team = new Team();
+        $team->setExternalId($teamData['id']);
+      }
+
+      $team->setName($teamData['name']);
+      $team->setCrest($teamData['crest'] ?? '');
+      $team->setAddress($teamData['address'] ?? '');
+      $team->setWebsite($teamData['website'] ?? '');
+      $team->setColors($teamData['clubColors'] ?? '');
+      $team->setFounded($teamData['founded'] ?? '');
+      $team->setVenue($teamData['venue'] ?? '');
+      $this->entityManager->persist($team);
+      $this->entityManager->flush();
+
+      // Create or update the coach.
+      $coachData = $teamData['coach'];
+
+      if (isset($coachData['id'])) {
+        $coach = $this->coaches->findOneBy(['externalId' => $coachData['id']]);
+        $coachIds[] = $coachData['id'];
+
+        if (!$coach) {
+          $coach = new Coach();
+          $coach->setExternalId($coachData['id']);
+        }
+
+        $coach->setName($coachData['name']);
+        $coach->setDateOfBirth($coachData['dateOfBirth'] ?? '');
+        $coach->setNationality($coachData['nationality'] ?? '');
+        $coach->setTeam($team);
+        $this->entityManager->persist($coach);
+      }
+
+      foreach ($teamData['squad'] as $playerData) {
+        if (!isset($playerData['id'])) {
+          continue;
+        }
+
+        $player = $this->players->findOneBy(['externalId' => $playerData['id']]);
+        $playerIds[] = $playerData['id'];
+
+        if (!$player) {
+          $player = new Player();
+          $player->setExternalId($playerData['id']);
+        }
+
+        $player->setName($playerData['name']);
+        $player->setPosition($playerData['position'] ?? '');
+        $player->setDateOfBirth($playerData['dateOfBirth'] ?? '');
+        $player->setNationality($playerData['nationality'] ?? '');
+        $player->setTeam($team);
+        $this->entityManager->persist($player);
+      }
+    }
+
+    $this->entityManager->flush();
+
+    $io->success(sprintf('Succesfully created/updated %s teams, %s coaches and %s players.', count($teamIds), count($coachIds), count($playerIds)));
 
     return Command::SUCCESS;
   }
