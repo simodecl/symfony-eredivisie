@@ -17,11 +17,13 @@ Once you have cloned this repository on your computer, you can use the following
 
 `ddev stop` This command stops the local development environment.
 
-To develop in the application, you can use the `ddev ssh` command. This opens a terminal session in the virtual development environment. Here you can run the `composer install` command to install the dependencies and use other symfony commands.
-
-With DDEV, you can also use some commands directly, for example `ddev composer install` or `ddev symfony console cache:clear`. This way, you don't have to open a terminal session in the virtual development environment.
-
 After starting the environment, you can use `ddev describe` to get the URL of the application. This URL can be used to access the application in the browser.
+
+Use the following commands after starting the environment:
+
+`ddev composer install` This command installs the dependencies of the project.
+
+`ddev php bin/console doctrine:migrations:migrate` This command creates the database tables.
 
 Before retrieving the football data, we need to add the API key and the base uri to the .env file. This file is located in the root of the project. Add the following line to the file:
 
