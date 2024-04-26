@@ -39,6 +39,9 @@ class FootballMatch {
   #[ORM\Column]
   private ?int $externalId = NULL;
 
+  #[ORM\Column]
+  private ?int $currentMatchday = null;
+
   /**
    * Get the football match ID.
    *
@@ -221,6 +224,28 @@ class FootballMatch {
    */
   public function setExternalId(int $externalId): static {
       $this->externalId = $externalId;
+
+      return $this;
+  }
+
+  /**
+   * Get the current matchday.
+   *
+   * @return int|null
+   *   The current matchday.
+   */
+  public function getCurrentMatchday(): ?int {
+      return $this->currentMatchday;
+  }
+
+  /**
+   * Set the current matchday.
+   *
+   * @param int $currentMatchday
+   *   The current matchday.
+   */
+  public function setCurrentMatchday(int $currentMatchday): static {
+      $this->currentMatchday = $currentMatchday;
 
       return $this;
   }

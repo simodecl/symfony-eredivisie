@@ -64,8 +64,8 @@ class GetTeamsCommand extends Command {
     }
 
     if (empty($data) || !isset($data['teams'])) {
-      $io->error('No data was returned by the Football Data API.');
-      $this->logger->error('No data was returned by the Football Data API.');
+      $io->error('No teams data was returned by the Football Data API.');
+      $this->logger->error('No teams data was returned by the Football Data API.');
 
       return Command::FAILURE;
     }
