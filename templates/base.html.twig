@@ -29,8 +29,8 @@
                     <div class="navbar-collapse collapse" id="appNavbar">
                         <ul class="navbar-nav ml-auto">
                             {% block header_navigation_links %}
-                                <li class="nav-item{{ _route == 'app_teams' ? ' active' : '' }}">
-                                    <a class="nav-link" href="{{ path('app_teams') }}">Teams</a>
+                                <li class="nav-item{{ _route == 'teams' ? ' active' : '' }}">
+                                    <a class="nav-link" href="{{ path('teams') }}">Teams</a>
                                 </li>
                             {% endblock %}
 

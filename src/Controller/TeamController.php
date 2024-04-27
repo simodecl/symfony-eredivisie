@@ -25,7 +25,7 @@ class TeamController extends AbstractController {
    * @return \Symfony\Component\HttpFoundation\Response
    *   A Symfony response object.
    */
-  #[Route('/teams', name: 'app_teams')]
+  #[Route('/teams', name: 'teams')]
   public function index(TeamRepository $teamRepo): Response {
     $teams = $teamRepo->findBy([], ['name' => 'ASC']);
 
@@ -42,7 +42,7 @@ class TeamController extends AbstractController {
    * @param \App\Repository\PlayerRepository $playerRepo
    *   The player repository.
    */
-  #[Route('/teams/{id}', name: 'team', requirements: ['id' => Requirement::POSITIVE_INT], methods: ['GET'])]
+  #[Route('/teams/{id}', name: 'team_detail', requirements: ['id' => Requirement::POSITIVE_INT], methods: ['GET'])]
   public function teamDetail(Team $team, PlayerRepository $playerRepo, FootballMatchRepository $footballMatchRepo): Response {
     return $this->render('team/detail.html.twig', [
       'team' => $team,
