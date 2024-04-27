@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello FootballMatchController!{% endblock %}
+
+{% block body %}
+    <div class="page-header">
+        <h1>Matchday {{ matchday }}</h1>
+    </div>
+
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-end">
+            <li class="page-item{{ has_previous_matchday ? '' : ' disabled'}}">
+                <a class="page-link"{% if has_previous_matchday %} href="{{ path('matches_paginated', { matchday: matchday - 1 }) }}"{% endif %}>Previous</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="{{ path('matches_paginated', { matchday: current_matchday }) }}">Go to current matchday</a>
+            </li>
+            <li class="page-item{{ has_next_matchday ? '' : ' disabled'}}">
+                <a class="page-link"{% if has_next_matchday %} href="{{ path('matches_paginated', { matchday: matchday + 1 }) }}"{% endif %}>Next</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-wrap">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Home team</th>
+                        <th>Away team</th>
+                        <th>Score</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for match in football_matches %}
+                        <tr>
+                            <td>{{ match.date|date('d-m-Y H:i', "Europe/Brussels") }}</td>
+                            <td>
+                                {% if match.homeScore is not null and match.awayScore is not null and match.homeScore > match.awayScore %}
+                                    <strong>{{ match.homeTeam.name }}</strong>
+                                {% else %}
+                                    {{ match.homeTeam.name }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if match.homeScore is not null and match.awayScore is not null and match.homeScore < match.awayScore %}
+                                    <strong>{{ match.awayTeam.name }}</strong>
+                                {% else %}
+                                    {{ match.awayTeam.name }}
+                                {% endif %}
+                            </td>
+                            <td>{% if match.homeScore is not null and match.awayScore is not null %}{{ match.homeScore }} - {{ match.awayScore }}{% endif %}</td>
+                            <td><div class="btn {{ match.status == 'FINISHED' ? 'btn-success' : 'btn-warning' }}">{{ match.status }}</div></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

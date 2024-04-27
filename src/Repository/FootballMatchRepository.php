@@ -92,4 +92,45 @@ class FootballMatchRepository extends ServiceEntityRepository {
     return $qb->getQuery()->getSingleResult();
   }
 
+  /**
+   * Find all matches by matchday.
+   *
+   * @param int $matchday
+   *   The matchday.
+   */
+  public function findAllByMatchday(int $matchday = 1): array {
+    // Sort by date ascending.
+    $qb = $this->createQueryBuilder('fm');
+    $qb->where($qb->expr()->eq('fm.matchday', $matchday));
+    $qb->orderBy('fm.date', 'ASC');
+
+    return $qb->getQuery()->getResult();
+  }
+
+  /**
+   * Get the last matchday.
+   *
+   * @return int
+   *   The last matchday.
+   */
+  public function getLastMatchday(): int {
+    $qb = $this->createQueryBuilder('fm');
+    $qb->select('MAX(fm.matchday)');
+
+    return $qb->getQuery()->getSingleScalarResult();
+  }
+
+  /**
+   * Get the current matchday.
+   *
+   * @return int
+   *   The current matchday.
+   */
+  public function getCurrentMatchday(): int {
+    $qb = $this->createQueryBuilder('fm');
+    $qb->select('MAX(fm.currentMatchday)');
+
+    return $qb->getQuery()->getSingleScalarResult();
+  }
+
 }

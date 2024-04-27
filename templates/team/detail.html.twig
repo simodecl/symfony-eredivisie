@@ -43,7 +43,7 @@
                     <tbody>
                     {% for match in matches %}
                         <tr>
-                            <td>{{ match.date|date('d-m-Y H:i') }}</td>
+                            <td>{{ match.date|date('d-m-Y H:i', "Europe/Brussels") }}</td>
                             <td>{% if match.homeTeam == team %}<strong>{{ match.homeTeam.name }}</strong>{% else %}{{ match.homeTeam.name }}{% endif %}</td>
                             <td>{% if match.awayTeam == team %}<strong>{{ match.awayTeam.name }}</strong>{% else %}{{ match.awayTeam.name }}{% endif %}</td>
                             <td>{% if match.homeScore is not null and match.awayScore is not null %}{{ match.homeScore }} - {{ match.awayScore }}{% endif %}</td>
