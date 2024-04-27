@@ -6,6 +6,7 @@ use App\Entity\FootballMatch;
 use App\Repository\FootballMatchRepository;
 use App\Repository\TeamRepository;
 use App\Service\FootballDataApiService;
+use App\Service\FootballDataApiValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -25,12 +26,26 @@ class GetMatchesCommand extends Command {
 
   /**
    * GetMatchesCommand constructor.
+   *
+   * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+   *   The entity manager.
+   * @param \App\Repository\TeamRepository $teams
+   *   The team repository.
+   * @param \App\Repository\FootballMatchRepository $footballMatches
+   *   The football match repository.
+   * @param \App\Service\FootballDataApiService $footballDataApiService
+   *   The Football Data API service.
+   * @param \App\Service\FootballDataApiValidator $footballDataApiValidator
+   *   The Football Data API validator.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   The logger.
    */
   public function __construct(
     private readonly EntityManagerInterface $entityManager,
     private readonly TeamRepository $teams,
     private readonly FootballMatchRepository $footballMatches,
     private readonly FootballDataApiService $footballDataApiService,
+    private readonly FootballDataApiValidator $footballDataApiValidator,
     private readonly LoggerInterface $logger
   ) {
     parent::__construct();
@@ -70,6 +85,20 @@ class GetMatchesCommand extends Command {
     $footballMatchIds = [];
 
     foreach ($data['matches'] as $footballMatchData) {
+      // Validate the football match data.
+      $violations = $this->footballDataApiValidator->validateFootballMatch($footballMatchData);
+
+      // Skip this match but log the id and it's violations.
+      if (count($violations) > 0) {
+        $io->warning(sprintf('The football match with id %s has been skipped due to the following violations: %s', $footballMatchData['id'], $violations));
+        $this->logger->warning('The football match with id {id} has been skipped due to the following violations: {violations}', [
+          'id' => $footballMatchData['id'],
+          'violations' => $violations,
+        ]);
+
+        continue;
+      }
+
       // Create or update the footballMatch.
       $footballMatch = $this->footballMatches->findOneBy(['externalId' => $footballMatchData['id']]);
       $footballMatchIds[] = $footballMatchData['id'];
