@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Team;
+use App\Repository\FootballMatchRepository;
 use App\Repository\PlayerRepository;
 use App\Repository\TeamRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,11 +43,12 @@ class TeamController extends AbstractController {
    *   The player repository.
    */
   #[Route('/teams/{id}', name: 'team', requirements: ['id' => Requirement::POSITIVE_INT], methods: ['GET'])]
-  public function teamDetail(Team $team, PlayerRepository $playerRepo): Response {
+  public function teamDetail(Team $team, PlayerRepository $playerRepo, FootballMatchRepository $footballMatchRepo): Response {
     return $this->render('team/detail.html.twig', [
       'team' => $team,
       'coach' => $team->getCoach(),
       'players' => $playerRepo->findBy(['team' => $team->getId()]),
+      'matches' => $footballMatchRepo->findAllByTeamId($team->getId()),
     ]);
   }
 

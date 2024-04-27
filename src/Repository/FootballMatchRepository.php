@@ -44,4 +44,52 @@ class FootballMatchRepository extends ServiceEntityRepository {
     return $qb->getQuery()->getResult();
   }
 
+  /**
+   * Find all matches by team id.
+   *
+   *  Find all matches where a given Team ID is present in either
+   *  the home or away team.
+   *
+   * @param int $teamId
+   *   The IDs of the team.
+   *
+   * @return \App\Entity\FootballMatch[]
+   *   The matches.
+   */
+  public function findAllByTeamId(int $teamId): array {
+    // Sort by matchday descending.
+    $qb = $this->createQueryBuilder('fm');
+    $qb->where($qb->expr()->orX(
+      $qb->expr()->eq('fm.homeTeam', $teamId),
+      $qb->expr()->eq('fm.awayTeam', $teamId)
+    ))->orderBy('fm.matchday', 'DESC');
+
+    return $qb->getQuery()->getResult();
+  }
+
+  /**
+   * Find the current matchday match by team id.
+   *
+   * Find the current matchday match where a given Team ID is present in either
+   * the home or away team.
+   *
+   * @param int $teamId
+   *   The IDs of the team.
+   *
+   * @return \App\Entity\FootballMatch
+   *   The matches.
+   */
+  public function findCurrentMatchdayByTeamId(int $teamId): FootballMatch {
+    $qb = $this->createQueryBuilder('fm');
+    $qb->where($qb->expr()->andX(
+      $qb->expr()->orX(
+        $qb->expr()->eq('fm.homeTeam', $teamId),
+        $qb->expr()->eq('fm.awayTeam', $teamId)
+      ),
+      $qb->expr()->eq('fm.currentMatchday', 'fm.matchday')
+    ));
+
+    return $qb->getQuery()->getSingleResult();
+  }
+
 }

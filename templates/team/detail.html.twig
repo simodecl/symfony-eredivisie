@@ -25,6 +25,37 @@
         </div>
     </div>
 
+    <h2 class="mt-4">Matches</h2>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-wrap">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Home team</th>
+                        <th>Away team</th>
+                        <th>Score</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for match in matches %}
+                        <tr>
+                            <td>{{ match.date|date('d-m-Y H:i') }}</td>
+                            <td>{% if match.homeTeam == team %}<strong>{{ match.homeTeam.name }}</strong>{% else %}{{ match.homeTeam.name }}{% endif %}</td>
+                            <td>{% if match.awayTeam == team %}<strong>{{ match.awayTeam.name }}</strong>{% else %}{{ match.awayTeam.name }}{% endif %}</td>
+                            <td>{% if match.homeScore is not null and match.awayScore is not null %}{{ match.homeScore }} - {{ match.awayScore }}{% endif %}</td>
+                            <td><div class="btn {{ match.status == 'FINISHED' ? 'btn-success' : 'btn-warning' }}">{{ match.status }}</div></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <h2 class="mt-4">Coach</h2>
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
