@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Optional;
 use Symfony\Component\Validator\Constraints\Required;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -89,7 +90,88 @@ class FootballDataApiValidator {
       ]),
     ]);
 
-    $constraint->allowExtraFields = true;
+    return $this->validator->validate($data, $constraint);
+  }
+
+  /**
+   * Validate the data of a team.
+   *
+   * @param array $data
+   *   The data of a team
+   *
+   * @return \Symfony\Component\Validator\ConstraintViolationListInterface
+   *   The list of constraint violations.
+   */
+  public function validateTeam(array $data): ConstraintViolationListInterface {
+    $constraint = new Collection([
+      'id' => new Required([
+        new NotBlank(),
+        new Type('integer'),
+      ]),
+      'name' => new Required([
+        new NotBlank(),
+        new Type('string'),
+      ]),
+      'crest' => new Optional([
+        new Type('string'),
+      ]),
+      'address' => new Optional([
+        new Type('string'),
+      ]),
+      'website' => new Optional([
+        new Type('string'),
+      ]),
+      'founded' => new Optional([
+        new Type('integer'),
+      ]),
+      'clubColors' => new Optional([
+        new Type('string'),
+      ]),
+      'venue' => new Optional([
+        new Type('string'),
+      ]),
+      'coach' => new Optional([
+        new Type('array'),
+        new Collection([
+          'id' => new Required([
+            new Type('integer'),
+          ]),
+          'name' => new Required([
+            new Type('string'),
+          ]),
+          'dateOfBirth' => new Optional([
+            new DateTime(['format' => 'Y-m-d']),
+          ]),
+          'nationality' => new Optional([
+            new Type('string'),
+          ]),
+        ], NULL, NULL, TRUE),
+      ]),
+      'squad' => new Required([
+        new Type('array'),
+        new All([
+          new Collection([
+            'id' => new Required([
+              new NotBlank(),
+              new Type('integer'),
+            ]),
+            'name' => new Required([
+              new NotBlank(),
+              new Type('string'),
+            ]),
+            'position' => new Optional([
+              new Type('string'),
+            ]),
+            'dateOfBirth' => new Optional([
+              new DateTime(['format' => 'Y-m-d']),
+            ]),
+            'nationality' => new Optional([
+              new Type('string'),
+            ]),
+          ], NULL, NULL, TRUE),
+        ]),
+      ]),
+    ], NULL, NULL, TRUE);
 
     return $this->validator->validate($data, $constraint);
   }

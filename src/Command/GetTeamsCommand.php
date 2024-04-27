@@ -9,6 +9,7 @@ use App\Repository\CoachRepository;
 use App\Repository\PlayerRepository;
 use App\Repository\TeamRepository;
 use App\Service\FootballDataApiService;
+use App\Service\FootballDataApiValidator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -28,6 +29,19 @@ class GetTeamsCommand extends Command {
 
   /**
    * GetTeamsCommand constructor.
+   *
+   * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+   *   The entity manager.
+   * @param \App\Repository\TeamRepository $teams
+   *   The team repository.
+   * @param \App\Repository\CoachRepository $coaches
+   *   The coach repository.
+   * @param \App\Repository\PlayerRepository $players
+   *   The player repository.
+   * @param \App\Service\FootballDataApiService $footballDataApiService
+   *   The Football Data API service.
+   * @param \App\Service\FootballDataApiValidator $footballDataApiValidator
+   *   The Football Data API validator.
    */
   public function __construct(
     private readonly EntityManagerInterface $entityManager,
@@ -35,6 +49,7 @@ class GetTeamsCommand extends Command {
     private readonly CoachRepository $coaches,
     private readonly PlayerRepository $players,
     private readonly FootballDataApiService $footballDataApiService,
+    private readonly FootballDataApiValidator $footballDataApiValidator,
     private readonly LoggerInterface $logger
   ) {
     parent::__construct();
@@ -76,6 +91,20 @@ class GetTeamsCommand extends Command {
     $playerIds = [];
 
     foreach ($data['teams'] as $teamData) {
+      // Validate the football match data.
+      $violations = $this->footballDataApiValidator->validateTeam($teamData);
+
+      // Skip this match but log the id and it's violations.
+      if (count($violations) > 0) {
+        $io->warning(sprintf('The team with id %s has been skipped due to the following violations: %s', $teamData['id'], $violations));
+        $this->logger->warning('The team with id {id} has been skipped due to the following violations: {violations}', [
+          'id' => $teamData['id'],
+          'violations' => $violations,
+        ]);
+
+        continue;
+      }
+
       // Create or update the team.
       $team = $this->teams->findOneBy(['externalId' => $teamData['id']]);
       $teamIds[] = $teamData['id'];
@@ -147,14 +176,6 @@ class GetTeamsCommand extends Command {
     $teamsToDelete = $this->teams->findAllExcept($teamIds);
     $coachesToDelete = $this->coaches->findAllExcept($coachIds);
     $playersToDelete = $this->players->findAllExcept($playerIds);
-
-    foreach ($teamsToDelete as $team) {
-      $this->entityManager->remove($team);
-    }
-
-    foreach ($coachesToDelete as $coach) {
-      $this->entityManager->remove($coach);
-    }
 
     foreach ($playersToDelete as $player) {
       $this->entityManager->remove($player);
