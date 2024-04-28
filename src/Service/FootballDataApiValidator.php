@@ -175,4 +175,57 @@ class FootballDataApiValidator {
 
     return $this->validator->validate($data, $constraint);
   }
+
+  /**
+   * Validate the data of a standing.
+   *
+   * @param array $data
+   *   The data of a standing.
+   *
+   * @return \Symfony\Component\Validator\ConstraintViolationListInterface
+   *   The list of constraint violations.
+   */
+  public function validateStanding(array $data): ConstraintViolationListInterface {
+    $constraint = new Collection([
+      'position' => new Required([
+        new NotBlank(),
+        new Type('integer'),
+      ]),
+      'team' => new Required([
+        new Type('array'),
+        new Collection([
+          'id' => new Required([
+            new NotBlank(),
+            new Type('integer'),
+          ]),
+        ], NULL, NULL, TRUE),
+      ]),
+      'playedGames' => new Required([
+        new Type('integer'),
+      ]),
+      'won' => new Required([
+        new Type('integer'),
+      ]),
+      'draw' => new Required([
+        new Type('integer'),
+      ]),
+      'lost' => new Required([
+        new Type('integer'),
+      ]),
+      'points' => new Required([
+        new Type('integer'),
+      ]),
+      'goalsFor' => new Required([
+        new Type('integer'),
+      ]),
+      'goalsAgainst' => new Required([
+        new Type('integer'),
+      ]),
+      'goalDifference' => new Required([
+        new Type('integer'),
+      ]),
+    ], NULL, NULL, TRUE);
+
+    return $this->validator->validate($data, $constraint);
+  }
 }
