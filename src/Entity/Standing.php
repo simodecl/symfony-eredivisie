@@ -250,4 +250,53 @@ class Standing {
     return $this;
   }
 
+  /**
+   * Get position color
+   *
+   * @return string
+   *   The position color.
+   */
+  public function getPositionColor(): string {
+    // UEFA Champions League (group stage)
+    if ($this->position == 1 || $this->position == 2) {
+      return '#0600ff';
+    }
+
+    // UEFA Champions League (qualifying)
+    if ($this->position == 3) {
+      return '#220090';
+    }
+
+    // UEFA Europa League (group stage)
+    if ($this->position == 4) {
+      return '#ff7a00';
+    }
+
+    // UEFA Conference League (qualifying)
+    if ($this->position == 5) {
+      return '#009440';
+    }
+
+    // Play-offs: UEFA Europa Conference League (qualifying)
+    if ($this->position >= 6 && $this->position < 10) {
+      return '#00d65b';
+    }
+
+    // No European competition or relegation.
+    if ($this->position >= 10 && $this->position < 16) {
+      return 'none';
+    }
+
+    // Keuken Kampioen Play-Offs
+    if ($this->position == 16) {
+      return '#f0a7b6';
+    }
+
+    // Keuken Kampioen Division (relegation)
+    if ($this->position == 17 || $this->position == 18) {
+      return '#ec1846';
+    }
+
+    return 'none';
+  }
 }

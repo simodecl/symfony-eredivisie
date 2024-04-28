@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Standings | Eredivise Dashboard{% endblock %}
+
+{% block body %}
+    <div class="page-header">
+        <h1>Current standings</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-wrap">
+                <table class="table table-striped standings">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Team</th>
+                        <th>Pts</th>
+                        <th>m</th>
+                        <th>m+</th>
+                        <th>m-</th>
+                        <th>m=</th>
+                        <th>g+</th>
+                        <th>g-</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for standing in standings %}
+                        <tr class="standing">
+                            <td>
+                                <span class="badge{% if standing.position > 9 and standing.position < 16 %} text-dark{% endif %}" style="background-color: {{ standing.getPositionColor() }}">{{ standing.position }}</span>
+                            </td>
+                            <td>
+                                <a href="{{ path('team_detail', { 'id': standing.team.id }) }}" class="text-decoration-none text-dark">
+                                    <img src="{{ standing.team.crest }}" alt="{{ standing.team.name }}" class="standing-team-crest img-thumbnail" />
+                                    <strong>{{ standing.team.name }}</strong>
+                                </a>
+                            </td>
+                            <td><strong>{{ standing.points }}</strong></td>
+                            <td>{{ standing.playedGames }}</td>
+                            <td>{{ standing.won }}</td>
+                            <td>{{ standing.lost }}</td>
+                            <td>{{ standing.draw }}</td>
+                            <td>{{ standing.goalsFor }}</td>
+                            <td>{{ standing.goalsAgainst }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 flex-wrap">
+            <span class="badge" style="background-color: #0600ff;">UEFA Champions League (group stage)</span>
+            <span class="badge" style="background-color: #220090;">UEFA Champions League (qualifying)</span>
+            <span class="badge" style="background-color: #ff7a00;">UEFA Europa League (group stage)</span>
+            <span class="badge" style="background-color: #009440;">UEFA Conference League (qualifying)</span>
+            <span class="badge" style="background-color: #00d65b;">Play-offs: UEFA Europa Conference League (qualifying)</span>
+            <span class="badge" style="background-color: #f0a7b6;">Keuken Kampioen Play-Offs)</span>
+            <span class="badge" style="background-color: #ec1846;">Keuken Kampioen Division (relegation)</span>
+        </div>
+    </div>
+{% endblock %}
