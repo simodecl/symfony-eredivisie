@@ -7,6 +7,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * The Standing Repository.
+ *
  * @extends ServiceEntityRepository<Standing>
  *
  * @method Standing|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,35 +16,49 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Standing[]    findAll()
  * @method Standing[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class StandingRepository extends ServiceEntityRepository
-{
-    public function __construct(ManagerRegistry $registry)
-    {
+class StandingRepository extends ServiceEntityRepository {
+
+    /**
+     * StandingRepository constructor.
+     *
+     * @param \Doctrine\Persistence\ManagerRegistry $registry
+     *   The registry.
+     */
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, Standing::class);
     }
 
-//    /**
-//     * @return Standing[] Returns an array of Standing objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Get the top standings.
+     *
+     * @param int $limit
+     *   The number of teams to return.
+     *
+     * @return \App\Entity\Standing[]
+     *   The top three teams.
+     */
+    public function findTopStandings(int $limit = 3): array {
+        $qb = $this->createQueryBuilder('s');
+        $qb->orderBy('s.points', 'DESC');
+        $qb->setMaxResults($limit);
 
-//    public function findOneBySomeField($value): ?Standing
-//    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Get the top teams with the most goals scored.
+     *
+     * @param int $limit
+     *   The number of teams to return.
+     * @return \App\Entity\Standing[]
+     *   The top goal scoring teams.
+     */
+    public function findTopGoalsFor(int $limit = 5): array {
+        $qb = $this->createQueryBuilder('s');
+        $qb->orderBy('s.goalsFor', 'DESC');
+        $qb->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
 }
