@@ -20,6 +20,8 @@ Use the following commands after starting the environment:
 
 `ddev php bin/console doctrine:migrations:migrate` This command creates the database tables.
 
+`ddev php bin/console sass:build` This command compiles the SCSS files to CSS.
+
 Before retrieving the football data, we need to add the API key and the base uri to the .env file. This file is located in the root of the project. Add the following line to the file:
 
 ```
