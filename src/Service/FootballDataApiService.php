@@ -75,4 +75,21 @@ class FootballDataApiService {
     return $response->toArray();
   }
 
+  /**
+   * Get the info of the Eredivisie season standings from the FootballData API.
+   *
+   * @return array
+   *   An array of Eredivisie standings.
+   *
+   * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+   * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+   * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+   * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+   * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+   */
+  public function getEredivisieStandings(): array {
+    $response = $this->client->request('GET', '/v4/competitions/DED/standings');
+    return $response->toArray();
+  }
+
 }

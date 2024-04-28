@@ -52,6 +52,9 @@ class Team {
   #[ORM\Column]
   private ?int $externalId = NULL;
 
+  #[ORM\OneToOne(mappedBy: 'team', cascade: ['persist', 'remove'])]
+  private ?Standing $standing = null;
+
   /**
    * Team constructor.
    */
@@ -307,6 +310,33 @@ class Team {
     $this->externalId = $externalId;
 
     return $this;
+  }
+
+  /**
+   * Get the team standing.
+   *
+   * @return Standing|null
+   *   The team standing.
+   */
+  public function getStanding(): ?Standing {
+      return $this->standing;
+  }
+
+  /**
+   * Set the team standing.
+   *
+   * @param Standing $standing
+   *   The team standing.
+   */
+  public function setStanding(Standing $standing): static {
+      // set the owning side of the relation if necessary
+      if ($standing->getTeam() !== $this) {
+          $standing->setTeam($this);
+      }
+
+      $this->standing = $standing;
+
+      return $this;
   }
 
 }
