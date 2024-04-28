@@ -88,7 +88,7 @@ class FootballDataApiValidator {
           ]),
         ], null, null, TRUE),
       ]),
-    ]);
+    ], null, null, TRUE);
 
     return $this->validator->validate($data, $constraint);
   }
