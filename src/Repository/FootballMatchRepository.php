@@ -133,4 +133,33 @@ class FootballMatchRepository extends ServiceEntityRepository {
     return $qb->getQuery()->getSingleScalarResult();
   }
 
+  /**
+   * Get the latest played match for the followed teams.
+   *
+   * Only get 1 latest result for each team.
+   *
+   * @param \App\Entity\Team[] $followedTeams
+   *   The followed teams.
+   *
+   * @return \App\Entity\FootballMatch[]
+   *   The latest played matches.
+   */
+  public function findLatestResults(array $followedTeams): array {
+    $ids = array_map(function ($team) {
+      return $team->getId();
+    }, $followedTeams);
+
+    $qb = $this->createQueryBuilder('fm');
+    $qb->where($qb->expr()->orX(
+      $qb->expr()->in('fm.homeTeam', $ids),
+      $qb->expr()->in('fm.awayTeam', $ids)
+    ));
+    $qb->andWhere($qb->expr()->isNotNull('fm.homeScore'));
+    $qb->andWhere($qb->expr()->isNotNull('fm.awayScore'));
+    $qb->orderBy('fm.date', 'DESC');
+    $qb->setMaxResults(count($ids));
+
+    return $qb->getQuery()->getResult();
+  }
+
 }

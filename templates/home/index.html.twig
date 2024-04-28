@@ -9,13 +9,68 @@
 
     <div class="row">
         <div class="col-12">
-            <p>You can follow teams to show their latest result on the homepage!</p>
+            {% if app.user %}
+                <p>You can follow teams to show their latest result on the homepage!</p>
+            {% else %}
+                <p>Login to follow teams to show their latest result on the homepage!</p>
+            {% endif %}
+
         </div>
         <div class="col-12">
-
-            <a class="btn btn-primary btn-lg" href="{{ path('teams') }}">
-                Teams
-            </a>
+            {% if app.user %}
+                <a class="btn btn-primary btn-lg" href="{{ path('teams') }}">
+                    Teams
+                </a>
+            {% else %}
+                <a class="btn btn-primary btn-lg" href="{{ path('app_login') }}">
+                    Login
+                </a>
+                <a class="btn btn-secondary btn-lg" href="{{ path('app_register') }}">
+                    Register
+                </a>
+            {% endif %}
         </div>
     </div>
+
+    {% if latest_results %}
+        <h2 class="mt-4">Latest results for followed teams</h2>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-wrap">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Kickoff</th>
+                            <th>Home team</th>
+                            <th>Away team</th>
+                            <th>Score</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for match in latest_results %}
+                            <tr>
+                                <td>{{ match.date|date('d-m-Y H:i', "Europe/Brussels") }}</td>
+                                <td>
+                                    {% if match.homeScore is not null and match.awayScore is not null and match.homeScore > match.awayScore %}
+                                        <strong>{{ match.homeTeam.name }}</strong>
+                                    {% else %}
+                                        {{ match.homeTeam.name }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if match.homeScore is not null and match.awayScore is not null and match.homeScore < match.awayScore %}
+                                        <strong>{{ match.awayTeam.name }}</strong>
+                                    {% else %}
+                                        {{ match.awayTeam.name }}
+                                    {% endif %}
+                                </td>
+                                <td>{% if match.homeScore is not null and match.awayScore is not null %}{{ match.homeScore }} - {{ match.awayScore }}{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

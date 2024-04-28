@@ -4,7 +4,12 @@
 
 {% block body %}
     <div class="page-header">
-        <h1>{{ team.name }}</h1>
+        <h1>
+            {{ team.name }}
+            {% if app.user and team in app.user.getFollowedTeams() %}
+                <span class="badge bg-danger fs-5">Following</span>
+            {% endif %}
+        </h1>
     </div>
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 teams">

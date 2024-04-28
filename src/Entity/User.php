@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -41,6 +43,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
   #[ORM\Column(type: 'boolean')]
   private $isVerified = FALSE;
+
+  /**
+   * @var Collection<int, Team>
+   */
+  #[ORM\ManyToMany(targetEntity: Team::class)]
+  private Collection $followedTeams;
+
+  public function __construct()
+  {
+      $this->followedTeams = new ArrayCollection();
+  }
 
   /**
    * Get the user ID.
@@ -151,6 +164,46 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     $this->isVerified = $isVerified;
 
     return $this;
+  }
+
+  /**
+   * Get the followed teams.
+   *
+   * @return \App\Entity\Team[]
+   *   The followed teams.
+   */
+  public function getFollowedTeams(): array {
+      return $this->followedTeams->toArray();
+  }
+
+  /**
+   * Add a followed team.
+   *
+   * @param Team $followedTeam
+   *   The followed team.
+   *
+   * @return $this
+   */
+  public function addFollowedTeam(Team $followedTeam): static {
+      if (!$this->followedTeams->contains($followedTeam)) {
+          $this->followedTeams->add($followedTeam);
+      }
+
+      return $this;
+  }
+
+  /**
+   * Remove a followed team.
+   *
+   * @param Team $followedTeam
+   *   The followed team.
+   *
+   * @return $this
+   */
+  public function removeFollowedTeam(Team $followedTeam): static {
+      $this->followedTeams->removeElement($followedTeam);
+
+      return $this;
   }
 
 }
