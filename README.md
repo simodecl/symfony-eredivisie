@@ -38,3 +38,11 @@ ddev php bin/console app:get-standings
 ```
 
 In a real-world application, we would use a cron job to retrieve the data at regular intervals. For this assignment, we will run these commands manually.
+
+## Screenshots
+
+![Screenshot 1](/assets/images/screens/screen_01?raw=true "Screenshot 1")
+
+![Screenshot 2](/assets/images/screens/screen_02?raw=true "Screenshot 2")
+
+![Screenshot 3](/assets/images/screens/screen_03?raw=true "Screenshot 3")
